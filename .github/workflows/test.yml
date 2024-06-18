@@ -1,0 +1,26 @@
+name: Test 
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+env:
+  RUSTFLAGS: -D warnings
+jobs:
+  test:
+    runs-on: ${{ matrix.platform }}
+    name: "${{ matrix.platform }} ${{ matrix.toolchain }}"
+    strategy:
+      matrix:
+        platform: [macos-latest]
+        toolchain: [stable, 1.76.0]
+    steps:
+      - uses: actions/checkout@v3
+      - name: "${{ matrix.toolchain }}"
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.toolchain }}
+          default: true
+      - name: test
+        run: cargo test
